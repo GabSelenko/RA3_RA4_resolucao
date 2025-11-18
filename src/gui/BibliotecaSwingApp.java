@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.util.Random;
 
 
 public class BibliotecaSwingApp extends JFrame {
@@ -52,6 +53,10 @@ public class BibliotecaSwingApp extends JFrame {
         inicializarInterface();
         System.out.println("Interface inicializada");
 
+        // Gera dados de teste (ajuste a quantidade conforme necessário)
+        gerarDadosDeTeste(1000);
+
+        // Atualiza a tabela depois da geração (requerimento)
         atualizarTabela();
         System.out.println("Tabela atualizada - Aplicação pronta!");
     }
@@ -498,6 +503,45 @@ public class BibliotecaSwingApp extends JFrame {
         } else {
             statusLabel.setForeground(COR_SUCCESS);
         }
+    }
+
+    // Novo: gera dados de teste (sem seed, não-reprodutível)
+    private void gerarDadosDeTeste(int quantidade) {
+        gerarDadosDeTeste(quantidade, System.currentTimeMillis());
+    }
+
+    // Novo: gera dados de teste com seed para reprodutibilidade
+    private void gerarDadosDeTeste(int quantidade, long seed) {
+        // Substitui a instância atual de biblioteca
+        biblioteca = new Biblioteca();
+
+        // Amostras de títulos e gêneros
+        String[] titulos = {
+            "Expedition", "Odyssey", "Legends", "Chronicles", "Quest",
+            "Shadow", "Galaxy", "Warzone", "Frontier", "Mystery",
+            "Arena", "Kingdom", "Empire", "Saga", "Rift"
+        };
+
+        String[] generos = {
+            "Ação", "Aventura", "RPG", "Estratégia", "Simulação",
+            "Corrida", "Esporte", "Puzzle", "Terror", "Indie"
+        };
+
+        int anoInicial = 1990;
+        int intervaloAnos = 35; // gera anos entre 1990 e 1990+34
+
+        Random random = new Random(seed);
+
+        for (int i = 1; i <= quantidade; i++) {
+            String titulo = titulos[random.nextInt(titulos.length)] + " " + i;
+            String genero = generos[random.nextInt(generos.length)];
+            int ano = anoInicial + random.nextInt(intervaloAnos);
+            biblioteca.adicionarJogo(new Jogo(i, titulo, genero, ano));
+        }
+
+        // Atualiza a tabela e mostra status
+        atualizarTabela();
+        mostrarStatus("Gerados " + quantidade + " jogos de teste", false);
     }
 
     public static void main(String[] args) {
